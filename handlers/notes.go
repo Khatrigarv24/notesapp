@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"notes-app/models"   // make sure package name is models
 	"github.com/google/uuid"
+	"strings"
 )
 
 func CreateNote(w http.ResponseWriter, r *http.Request) {
@@ -32,3 +33,27 @@ func GetNotes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(models.Notes)  // models.Notes slice exported
 }
 
+func UpdateNote(w http.ResponseWriter, r *http.Request) {
+	id := strings.TrimPrefix(r.URL.Path, "/notes/")
+	var updateNote models.Note
+	err := json.NewDecoder(r.Body).Decode(&updateNote)
+	if err != nil {
+		http.Error(w, "invalid note", http.StatusBadRequest)
+		return
+	}
+
+	for i, note := range models.Notes {
+		if note.Id == id {
+			models.Notes[i].Title = updateNote.Title
+			models.Notes[i].Content = updateNote.Content
+			if err := models.SaveNotes(); err != nil {
+				http.Error(w, "Failed to save note", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(models.Notes[i])
+			return
+		}
+	}
+	http.Error(w, "Note not found", http.StatusNotFound)
+}

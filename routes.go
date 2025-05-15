@@ -15,4 +15,11 @@ func SetupRoutes() {
 			http.Error(w, "bad method", http.StatusMethodNotAllowed)
 		}
 	})
+	http.HandleFunc("/notes/", func(w http.ResponseWriter, r *http.Request){
+		if r.Method == http.MethodPut {
+			handlers.UpdateNote(w,r)
+		}else {
+			http.Error(w, "bad method", http.StatusMethodNotAllowed)
+		}
+	})
 }
