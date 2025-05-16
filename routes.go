@@ -5,23 +5,15 @@ import (
 	"notes-app/handlers"
 )
 
-func SetupRoutes() {
-	http.HandleFunc("/notes", func(w http.ResponseWriter, r *http.Request){
-		if r.Method == http.MethodGet {
-			handlers.GetNotes(w,r)
-		}else if r.Method == http.MethodPost{
-			handlers.CreateNote(w,r)
-		}else {
-			http.Error(w, "bad method", http.StatusMethodNotAllowed)
-		}
-	})
-	http.HandleFunc("/notes/", func(w http.ResponseWriter, r *http.Request){
-		if r.Method == http.MethodPut {
-			handlers.UpdateNote(w,r)
-		}else if r.Method == http.MethodDelete {
-			handlers.DeleteNote(w,r)
-		}else {
-			http.Error(w, "bad method", http.StatusMethodNotAllowed)
-		}
-	})
+func RegisterRoutes() {
+    http.HandleFunc("/notes", func(w http.ResponseWriter, r *http.Request) {
+        switch r.Method {
+        case "GET":
+            handlers.GetNotes(w, r)
+        case "POST":
+            handlers.CreateNote(w, r)
+        default:
+            http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        }
+    })
 }
