@@ -57,3 +57,21 @@ func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Error(w, "Note not found", http.StatusNotFound)
 }
+
+func DeleteNote(w http.ResponseWriter, r *http.Request) {
+	id := strings.TrimPrefix(r.URL.Path, "/notes/")
+
+	for i, note := range models.Notes {
+		if note.Id == id {
+			models.Notes = append(models.Notes[:i], models.Notes[i+1:]...)
+			if err := models.SaveNotes() ; err != nil {
+				http.Error(w, "Failed to save note", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(map[string]string{"message": "Note Deleted"})
+			return
+		}
+	}
+	http.Error(w,"Note not Found", http.StatusNotFound)
+}
