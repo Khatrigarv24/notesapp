@@ -2,13 +2,17 @@ package models
 
 import (
 	"context"
-	"time"
 	"log"
+	"time"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var NotesCollection *mongo.Collection
+var (
+	NotesCollection *mongo.Collection
+	UsersCollection *mongo.Collection
+)
 
 func ConnectDB(uri string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -25,4 +29,5 @@ func ConnectDB(uri string) {
 	}
 	db := client.Database("notesDB")
 	NotesCollection = db.Collection("notes")
+	UsersCollection = db.Collection("users")
 }

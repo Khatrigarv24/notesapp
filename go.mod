@@ -3,6 +3,7 @@ module notes-app
 go 1.24.3
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
